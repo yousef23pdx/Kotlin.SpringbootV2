@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/")
 
 class HelloWorldController(
-) {
+    val ordersRepository: OrdersRepository
+){
 
     @GetMapping("home")
     fun homepage() = "This is the home page for SpeedDash"
@@ -23,4 +24,19 @@ class HelloWorldController(
 
     @GetMapping("settings")
     fun settings() = "This is the settings page for SpeedDash"
+
+    @PostMapping("orders")
+    fun submitOrder(@RequestBody request: OrderRequest): Order{
+
+        val order = Order(null, request.user, request.resturant, request.items.toMutableList())
+        return ordersRepository.save(order)
+    }
+    @GetMapping("allorders")
+    fun listOrders(): List<Order> = ordersRepository.findAll()
 }
+
+data class OrderRequest(
+    val user: String,
+    val resturant: String,
+    val items: List<String>
+)
