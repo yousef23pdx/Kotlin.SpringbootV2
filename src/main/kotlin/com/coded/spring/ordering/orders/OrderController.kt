@@ -1,4 +1,4 @@
-package com.coded.spring.ordering
+package com.coded.spring.ordering.orders
 
 import org.springframework.web.bind.annotation.*
 
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/")
 
-class HelloWorldController(
+class OrderController(
     val ordersRepository: OrdersRepository
 ){
 
@@ -26,17 +26,17 @@ class HelloWorldController(
     fun settings() = "This is the settings page for SpeedDash"
 
     @PostMapping("orders")
-    fun submitOrder(@RequestBody request: OrderRequest): Order{
+    fun submitOrder(@RequestBody request: OrderRequest): OrderEntity {
 
-        val order = Order(null, request.user, request.resturant, request.items.toMutableList())
+        val order = OrderEntity(null, request.user, request.resturant, request.items)
         return ordersRepository.save(order)
     }
     @GetMapping("allorders")
-    fun listOrders(): List<Order> = ordersRepository.findAll()
+    fun listOrders(): List<OrderEntity> = ordersRepository.findAll()
 }
 
 data class OrderRequest(
     val user: String,
     val resturant: String,
-    val items: List<String>
+    val items: String
 )
