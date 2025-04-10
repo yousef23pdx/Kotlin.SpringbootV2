@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController
 class UsersController(
     private val usersService: UsersService
 ){
-
     @GetMapping("/users/v1/list")
     fun users() = usersService.listUsers()
 }

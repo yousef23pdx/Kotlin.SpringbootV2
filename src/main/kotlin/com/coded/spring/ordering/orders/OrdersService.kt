@@ -5,13 +5,17 @@ import jakarta.inject.Named
 class OrdersService(
     private val ordersRepository: OrdersRepository,
 ) {
-
-    fun listOrders(): List<OrderEntity> = ordersRepository.findAll().map {
-        OrderEntity(
-            username = it.username,
-            restaurant = it.restaurant,
-            items = it.items
+    fun listOrders(): List<Order> = ordersRepository.findAll().map {
+        Order(
+            id = it.id,
+            user_id = it.user_id
 
         )
+
     }
 }
+
+data class Order(
+    var id: Long?,
+    var user_id: Long?
+)

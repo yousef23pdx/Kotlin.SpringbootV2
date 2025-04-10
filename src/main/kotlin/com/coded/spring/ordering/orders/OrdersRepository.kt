@@ -12,14 +12,9 @@ interface OrdersRepository: JpaRepository<OrderEntity, Long>
  class OrderEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
-    var username: String,
-    var restaurant: String,
-    //@ElementCollection
-    //var items: MutableList<String?> = mutableListOf()
-    var items: String
-
+    var id: Long?,
+    var user_id: Long?,
 
 ){
-    constructor(): this(null, "","", "")
+    constructor(): this(null, null)
 }
