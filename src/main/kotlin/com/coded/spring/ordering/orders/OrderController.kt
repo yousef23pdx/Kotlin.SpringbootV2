@@ -1,26 +1,35 @@
 package com.coded.spring.ordering.orders
 
+import com.coded.spring.ordering.DTO.Order
+import com.coded.spring.ordering.DTO.SubmitOrderRequest
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 
 @RestController
-
+@RequestMapping("/orders/v1")
 class OrderController(
     val ordersRepository: OrdersRepository,
     private val ordersService: OrdersService
 
 ){
-    @GetMapping("/listOrders")
-    fun listOrders(): List<OrderEntity> = ordersRepository.findAll()
 
-    @PostMapping("/listOrders")
-    fun createOrder(@RequestBody request: CreateOrderRequest) {
-        ordersService.createOrder(request.userId)
+    @PostMapping
+    fun submitOrder(
+        @RequestBody request: SubmitOrderRequest,
+        principal: Principal
+    ): ResponseEntity<String> {
+        val username = principal.name // logged-in user
+        ordersService.submitOrder(username, request.itemIds)
+        return ResponseEntity.ok("Order submitted successfully.")
+    }
+
+    @GetMapping
+    fun listMyOrders(principal: Principal): List<Order> {
+        return ordersService.listOrdersForUser(principal.name)
     }
 
 
 }
 
-data class CreateOrderRequest(
-    val userId: Long
-)

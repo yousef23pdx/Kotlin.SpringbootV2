@@ -15,7 +15,8 @@ interface OrdersRepository: JpaRepository<OrderEntity, Long>{
 
 @Entity
 @Table(name = "orders")
- class OrderEntity(
+class OrderEntity(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
@@ -24,9 +25,9 @@ interface OrdersRepository: JpaRepository<OrderEntity, Long>{
     @JoinColumn(name = "user_id")
     var user: UserEntity? = null,
 
-    @OneToMany(mappedBy = "order_id")
-    val items: List<ItemEntity>? = null
+    @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL])
+    var items: List<ItemEntity>? = null
 
-){
-    constructor(): this(null, UserEntity(), listOf())
+) {
+    constructor() : this(null, null, listOf())
 }

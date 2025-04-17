@@ -1,5 +1,9 @@
 package com.coded.spring.ordering.items
+import com.coded.spring.ordering.DTO.Item
+import com.coded.spring.ordering.DTO.SubmitItemRequest
 import jakarta.inject.Named
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 
 @Named
 class ItemsService(
@@ -8,20 +12,22 @@ class ItemsService(
     fun listItems(): List<Item> = itemsRepository.findAll().map { entity ->
         Item(
             id = entity.id,
-            order_id = entity.order_id,
-            items = entity.items,
+            order_id = entity.order?.id,
+            name = entity.name,
             quantity = entity.quantity,
             note = entity.note,
             price = entity.price
         )
     }
-}
 
-data class Item(
-    val id: Long?,
-    val order_id: Long?,
-    val items: String?,
-    val quantity: Long?,
-    val note: String?,
-    val price: Double?
-)
+    fun submitItem(request: SubmitItemRequest): ItemEntity {
+        val item = ItemEntity(
+            name = request.name,
+            quantity = request.quantity,
+            note = request.note,
+            price = request.price
+        )
+        return itemsRepository.save(item)
+    }
+
+}

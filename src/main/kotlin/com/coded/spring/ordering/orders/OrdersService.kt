@@ -1,48 +1,53 @@
 package com.coded.spring.ordering.orders
 
-import com.coded.spring.ordering.items.Item
-import com.coded.spring.ordering.items.ItemEntity
+import com.coded.spring.ordering.DTO.Order
+import com.coded.spring.ordering.items.ItemsRepository
 import com.coded.spring.ordering.users.UsersRepository
 import jakarta.inject.Named
+import com.coded.spring.ordering.DTO.Item
 
 
 @Named
 class OrdersService(
     private val ordersRepository: OrdersRepository,
-    private val usersRepository: UsersRepository
-
+    private val usersRepository: UsersRepository,
+    private val itemsRepository: ItemsRepository
 ) {
-    fun listOrders(): List<Order> = ordersRepository.findAll().map { t ->
-        Order(
-            id = t.id,
-            user_id = t.user?.id.toString(),
-            items = t.items?.map {
-                Item(
-                    id = it.id,
-                    order_id = it.order_id,
-                    quantity = it.quantity,
-                    note = it.note,
-                    price = it.price,
-                    items = it.items
 
-                )
-            }
-        )
-    }
+    fun submitOrder(username: String, itemIds: List<Long>) {
+        val user = usersRepository.findByUsername(username)
+            ?: throw IllegalArgumentException("User not found")
 
+        val order = OrderEntity(user = user)
+        val savedOrder = ordersRepository.save(order)
 
-    fun createOrder(userId: Long) {
-        val user = usersRepository.findById(userId).orElseThrow {
-            IllegalArgumentException("User with id $userId not found")
+        val items = itemsRepository.findAllById(itemIds).map {
+            it.order = savedOrder
+            it
         }
-        val newOrder = OrderEntity(user = user)
-        ordersRepository.save(newOrder)
+
+        itemsRepository.saveAll(items)
     }
 
-}
+    fun listOrdersForUser(username: String): List<Order> {
+        val user = usersRepository.findByUsername(username)
+            ?: throw IllegalArgumentException("User not found")
 
-data class Order(
-    val id: Long?,
-    val user_id: String,
-    var items: List<Item>?
-)
+        return ordersRepository.findByUserId(user.id!!).map { orderEntity ->
+            Order(
+                id = orderEntity.id,
+                user_id = user.id,
+                items = orderEntity.items?.map {
+                    Item(
+                        id = it.id,
+                        order_id = it.order?.id,
+                        name = it.name,
+                        quantity = it.quantity,
+                        note = it.note,
+                        price = it.price
+                    )
+                } ?: listOf()
+            )
+        }
+    }
+}

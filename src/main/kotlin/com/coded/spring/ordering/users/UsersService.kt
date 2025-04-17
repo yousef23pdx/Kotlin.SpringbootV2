@@ -1,4 +1,5 @@
 package com.coded.spring.ordering.users
+import com.coded.spring.ordering.DTO.User
 import jakarta.inject.Named
 
 @Named
@@ -9,12 +10,10 @@ class UsersService(
     fun listUsers(): List<User> = usersRepository.findAll().map {
         User(
             name = it.name,
-            age = it.age
+            age = it.age,
+            username = it.username,
+            password = it.password
+
         )
     }
 }
-
-data class User(
-    val name: String,
-    val age: Int
-)
