@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 @Named
 interface UsersRepository : JpaRepository<UserEntity, Long> {
     fun age(age: Int): MutableList<UserEntity>
-
     fun findByUsername(username: String): UserEntity?
 }
 
@@ -19,7 +18,6 @@ data class UserEntity(
     val id: Long? = null,
     val name: String,
     val age: Int,
-
 
     val username: String,
     val password: String,
