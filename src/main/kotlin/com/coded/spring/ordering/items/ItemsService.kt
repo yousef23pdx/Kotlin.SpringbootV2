@@ -2,12 +2,14 @@ package com.coded.spring.ordering.items
 import com.coded.spring.ordering.DTO.Item
 import com.coded.spring.ordering.DTO.SubmitItemRequest
 import jakarta.inject.Named
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.beans.factory.annotation.Value
 
 @Named
 class ItemsService(
     private val itemsRepository: ItemsRepository,
+    @Value("\${festive-mode:false}")
+    val festiveMode: Boolean
+
 ) {
     fun listItems(): List<Item> = itemsRepository.findAll().map { entity ->
         Item(
@@ -16,7 +18,7 @@ class ItemsService(
             name = entity.name,
             quantity = entity.quantity,
             note = entity.note,
-            price = entity.price
+            price = if (festiveMode) entity.price?.times(0.8) else entity.price
         )
     }
 
