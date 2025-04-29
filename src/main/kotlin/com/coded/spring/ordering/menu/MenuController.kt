@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController
 class MenuController(
     private val menuService: MenuService
 ) {
-    @GetMapping("/menus/v1/menu")
+    @GetMapping("/menu/v1/list")
     fun getMenu(): List<MenuEntity> = menuService.getMenu()
 }

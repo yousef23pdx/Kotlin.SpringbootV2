@@ -3,6 +3,7 @@ import com.coded.spring.ordering.DTO.UserRequest
 import com.coded.spring.ordering.DTO.UserResponse
 import com.coded.spring.ordering.exceptions.TransferFundsException
 import jakarta.inject.Named
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 const val USERNAME_MIN_LENGTH = 4
@@ -14,6 +15,7 @@ const val PASSWORD_MAX_LENGTH = 30
 @Service
 class UsersService(
     private val usersRepository: UsersRepository,
+    private val passwordEncoder: PasswordEncoder
 ) {
 
     fun registerUser(request: UserRequest): UserResponse {
@@ -29,6 +31,8 @@ class UsersService(
             throw TransferFundsException(
                 "Password must be between ${PASSWORD_MIN_LENGTH} and ${PASSWORD_MAX_LENGTH} characters")
         }
+
+        val encodedPassword = passwordEncoder.encode(request.password)
 
         val createUser = UserEntity(
             name = request.name,
