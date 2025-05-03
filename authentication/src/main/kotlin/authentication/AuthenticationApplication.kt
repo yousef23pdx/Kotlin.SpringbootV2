@@ -1,4 +1,4 @@
-package authentication.security
+package authentication
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

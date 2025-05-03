@@ -1,6 +1,8 @@
-package com.coded.spring.ordering.menu
+package order.menu
 
 import jakarta.inject.Named
+import order.menu.MenuEntity
+import order.menu.MenuRepository
 
 @Named
 class MenuService(

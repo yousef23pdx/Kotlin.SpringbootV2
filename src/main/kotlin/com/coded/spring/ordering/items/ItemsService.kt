@@ -1,9 +1,11 @@
 package items
 
-import jakarta.inject.Named
+import orders.ItemEntity
+import orders.ItemsRepository
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
 
-@Named
+@Service
 class ItemsService(
     private val itemsRepository: ItemsRepository,
     @Value("\${festive-mode:false}")

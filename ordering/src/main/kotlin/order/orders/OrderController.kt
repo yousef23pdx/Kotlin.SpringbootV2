@@ -1,9 +1,5 @@
-package orders
+package order.orders
 
-import ordering.orders.Order
-import ordering.orders.SubmitOrderRequest
-import ordering.orders.OrdersRepository
-import ordering.orders.OrdersService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -11,32 +7,32 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.security.Principal
 
 @RestController
-@RequestMapping("/orders/v1")
+@RequestMapping("/order/orders/v1")
 @Tag(name = "ORDERING", description = "Endpoints related to order submission and retrieval")
 class OrderController(
-    val ordersRepository: OrdersRepository,
+    private val ordersRepository: OrdersRepository,
     private val ordersService: OrdersService
 ) {
 
-    @PostMapping
-    @Operation(summary = "Submit a new order", description = "Submits a new order for the logged-in user")
+    @PostMapping("/create")
+    @Operation(summary = "Create a new order", description = "Creates a new order along with items")
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Order submitted successfully"),
-            ApiResponse(responseCode = "400", description = "Invalid request format"),
+            ApiResponse(responseCode = "200", description = "Order created successfully"),
+            ApiResponse(responseCode = "400", description = "Invalid input"),
             ApiResponse(responseCode = "403", description = "Unauthorized access")
         ]
     )
-    fun submitOrder(
-        @RequestBody request: SubmitOrderRequest,
+    fun createOrder(
+        @RequestBody request: CreateOrderRequest,
         servletRequest: HttpServletRequest
-    ): ResponseEntity<String> {
+    ): ResponseEntity<Order> {
+        println("🔥 [OrderController] createOrder() hit")
         val userId = servletRequest.getAttribute("userId") as Long
-        ordersService.submitOrder(userId, request.itemIds)
-        return ResponseEntity.ok("Order submitted successfully.")
+        val order = ordersService.createOrder(userId, request.items)
+        return ResponseEntity.ok(order)
     }
 
     @GetMapping

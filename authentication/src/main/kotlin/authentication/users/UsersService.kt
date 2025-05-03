@@ -1,5 +1,7 @@
 package authentication.users
+
 import jakarta.inject.Named
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -16,41 +18,36 @@ class UsersService(
 ) {
 
     fun registerUser(request: UserRequest): UserResponse {
-
-        if (request.username.length < USERNAME_MIN_LENGTH ||
-            request.username.length > USERNAME_MAX_LENGTH
-        ) {
-            throw TransferFundsException(
-                "Username must be between $USERNAME_MIN_LENGTH and $USERNAME_MAX_LENGTH characters")
+        if (request.username.length !in USERNAME_MIN_LENGTH..USERNAME_MAX_LENGTH) {
+            throw IllegalArgumentException("Username must be between $USERNAME_MIN_LENGTH and $USERNAME_MAX_LENGTH characters")
         }
 
-        if (request.password.length < PASSWORD_MIN_LENGTH ||
-            request.password.length > PASSWORD_MAX_LENGTH
-        ) {
-            throw TransferFundsException(
-                "Password must be between $PASSWORD_MIN_LENGTH and $PASSWORD_MAX_LENGTH characters")
+        if (request.password.length !in PASSWORD_MIN_LENGTH..PASSWORD_MAX_LENGTH) {
+            throw IllegalArgumentException("Password must be between $PASSWORD_MIN_LENGTH and $PASSWORD_MAX_LENGTH characters")
         }
 
-        val encodedPassword = passwordEncoder.encode(request.password)
-
-        val createUser = UserEntity(
+        val user = UserEntity(
             name = request.name,
             age = request.age,
             username = request.username,
-            password = request.password
+            password = passwordEncoder.encode(request.password)
         )
 
-        val savedUser = usersRepository.save(createUser)
-        return UserResponse(id = savedUser.id!!, username = savedUser.username)
+        val saved = usersRepository.save(user)
+        return UserResponse(id = saved.id!!, username = saved.username)
     }
 
-    fun listUsers(): List<UserRequest> = usersRepository.findAll().map {
-        UserRequest(
-            name = it.name,
-            age = it.age,
-            username = it.username,
-            password = it.password
+    fun findByUsername(username: String): UserEntity {
+        return usersRepository.findByUsername(username)
+            ?: throw UsernameNotFoundException("User not found for username: $username")
+    }
 
-        )
+    fun listUsers(): List<UserResponse> {
+        return usersRepository.findAll().map {
+            UserResponse(
+                id = it.id ?: 0,
+                username = it.username
+            )
+        }
     }
 }

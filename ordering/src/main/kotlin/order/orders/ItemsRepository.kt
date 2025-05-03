@@ -1,4 +1,4 @@
-package items
+package order.orders
 
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository

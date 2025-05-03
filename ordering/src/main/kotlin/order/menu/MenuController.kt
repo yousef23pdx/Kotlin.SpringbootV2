@@ -1,4 +1,4 @@
-package com.coded.spring.ordering.menu
+package order.menu
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -13,7 +13,7 @@ class MenuController(
     private val menuService: MenuService
 ) {
 
-    @GetMapping("/menu/v1/list")
+    @GetMapping("/order/menu/v1/list")
     @Operation(
         summary = "List all menu items for homepage",
         description = "Returns all menu entries including discounts if active"

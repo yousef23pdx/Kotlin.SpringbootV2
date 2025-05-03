@@ -1,4 +1,4 @@
-package ordering.config
+package order.config
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
