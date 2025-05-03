@@ -11,6 +11,7 @@
 	<groupId>com.coded.spring</groupId>
 	<artifactId>Ordering</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>Kotlin.SpringbootV2</name>
 	<description>Kotlin.SpringbootV2</description>
 	<url/>
@@ -20,6 +21,11 @@
 	<developers>
 		<developer/>
 	</developers>
+	<modules>
+		<module>authentication</module>
+		<module>ordering</module>
+        <module>welcome</module>
+    </modules>
 	<scm>
 		<connection/>
 		<developerConnection/>
